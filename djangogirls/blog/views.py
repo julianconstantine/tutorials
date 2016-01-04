@@ -1,6 +1,7 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from .models import Post  # Remember: views connect models (e.g. Post to templates!)
+from .forms import PostForm
 
 
 # Create your views here.
@@ -12,3 +13,21 @@ def post_list(request):
 def post_detail(request, pk):
     post = get_object_or_404(klass=Post, pk=pk)
     return render(request=request, template_name='blog/post_detail.html', context={'post': post})
+
+
+def post_new(request):
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.published_date = timezone.now()
+            post.save()
+
+            return redirect(to='post_detail', pk=post.pk)
+        else:
+            form = PostForm()
+
+    return render(request=request, template_name='blog/post_edit.html', context={'form': form})
+
