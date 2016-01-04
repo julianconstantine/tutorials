@@ -1,0 +1,15 @@
+<!-- When using Django/Python like this, I don't think you need the traditional <html> <body> ... </body> </html>
+tags-->
+
+{% if latest_question_list %}
+    <ul>
+        {% for question in latest_question_list %}
+            <li>
+                <!-- The 'polls:detail' is referring to the URL 'detail' within the polls application namespace  -->
+                <a href="{% url 'polls:detail' question.id %}"> {{ question.question_text }} </a>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No polls are available.</p>
+{% endif %}
